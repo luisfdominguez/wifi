@@ -1,0 +1,11 @@
+{
+  "name": "wifi",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generador de URLs/etiquetas NFC para compartir credenciales WiFi",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "start": "npx serve ."
+  }
+}

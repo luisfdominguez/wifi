@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <title>WiFi NFC · Generador de etiquetas</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>WiFi → Etiqueta NFC</h1>
+      <p class="muted">Genera la URL para grabar en una etiqueta NFC (NTAG213/215/216). Todo se procesa en tu dispositivo.</p>
+    </header>
+
+    <form id="network-form" novalidate>
+      <label for="ssid">Nombre de red (SSID)</label>
+      <input id="ssid" name="ssid" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+
+      <label for="security">Cifrado</label>
+      <select id="security" name="security">
+        <option value="WPA" selected>WPA / WPA2</option>
+        <option value="SAE">WPA3</option>
+        <option value="WEP">WEP</option>
+        <option value="nopass">Abierta (sin clave)</option>
+      </select>
+
+      <div id="password-group">
+        <label for="password">Clave</label>
+        <div class="row">
+          <input id="password" name="password" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <button type="button" id="toggle-password" class="secondary" aria-pressed="false">Mostrar</button>
+        </div>
+      </div>
+
+      <label class="checkbox"><input id="hidden" type="checkbox"> Red oculta</label>
+
+      <p id="errors" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="result" hidden aria-live="polite">
+      <h2>URL generada</h2>
+      <textarea id="url-output" readonly rows="4"></textarea>
+      <div class="row">
+        <button type="button" id="copy-url">Copiar URL</button>
+        <span id="size-info" class="muted"></span>
+      </div>
+
+      <div id="qr-preview" class="qr" aria-label="Código QR de la URL"></div>
+
+      <h2>Escribir en etiqueta</h2>
+      <div class="row">
+        <button type="button" id="write-url">Grabar URL</button>
+        <button type="button" id="write-native" class="secondary">Grabar WiFi nativo (Android)</button>
+      </div>
+      <p id="nfc-status" class="muted" role="status"></p>
+      <p id="nfc-unsupported" class="muted" hidden>
+        La escritura directa requiere Chrome en Android. Copia la URL y grábala con la app «NFC Tools» (iPhone o Android) como registro «URL».
+      </p>
+    </section>
+
+    <footer class="muted">
+      <small>La clave va en el fragmento (#) de la URL, que el navegador no envía a ningún servidor. Aun así, cualquiera que lea la etiqueta verá la clave.</small>
+    </footer>
+  </main>
+
+  <script src="vendor/qrcode.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

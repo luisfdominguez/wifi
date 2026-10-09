@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>Conectar a WiFi</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>Conectar a WiFi</h1>
+      <p id="error" class="error" role="alert" hidden></p>
+    </header>
+
+    <section id="network" hidden>
+      <dl class="details">
+        <dt>Red</dt><dd id="ssid-value"></dd>
+        <dt>Cifrado</dt><dd id="security-value"></dd>
+        <dt id="password-label">Clave</dt><dd id="password-value" class="mono"></dd>
+      </dl>
+      <button type="button" id="copy-password">Copiar clave</button>
+      <p id="copy-status" class="muted" role="status"></p>
+
+      <h2>O escanea con la cámara</h2>
+      <div id="qr" class="qr" aria-label="Código QR para conectar a la red"></div>
+      <p class="muted">Abre «Ajustes → WiFi», elige la red y pega la clave. En otro dispositivo, escanea el QR con la cámara.</p>
+    </section>
+  </main>
+
+  <script src="vendor/qrcode.js"></script>
+  <script type="module" src="js/connect.js"></script>
+</body>
+</html>
