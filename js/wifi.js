@@ -122,3 +122,57 @@ export function buildWscPayload({ ssid, security, password = "" }) {
   ]);
   return tlv(0x100e, credential);
 }
+
+// --- Perfil de configuración de iOS (.mobileconfig) ---
+
+export const MOBILECONFIG_MIME_TYPE = "application/x-apple-aspen-config";
+
+const MOBILECONFIG_ENCRYPTION = {
+  [SECURITY.NONE]: "None",
+  [SECURITY.WEP]: "WEP",
+  [SECURITY.WPA]: "WPA",
+  [SECURITY.WPA3]: "WPA3",
+};
+
+const escapeXml = (value) =>
+  value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[c]);
+
+const xmlBoolean = (value) => (value ? "<true/>" : "<false/>");
+
+// createUuid es inyectable para que los tests sean deterministas.
+export function buildMobileConfig(
+  { ssid, security, password = "", hidden = false },
+  createUuid = () => globalThis.crypto.randomUUID().toUpperCase(),
+) {
+  const passwordEntry =
+    security === SECURITY.NONE ? "" : `\n      <key>Password</key><string>${escapeXml(password)}</string>`;
+  const displayName = `WiFi ${escapeXml(ssid)}`;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>PayloadContent</key>
+  <array>
+    <dict>
+      <key>AutoJoin</key><true/>
+      <key>EncryptionType</key><string>${MOBILECONFIG_ENCRYPTION[security]}</string>
+      <key>HIDDEN_NETWORK</key>${xmlBoolean(hidden)}${passwordEntry}
+      <key>SSID_STR</key><string>${escapeXml(ssid)}</string>
+      <key>PayloadType</key><string>com.apple.wifi.managed</string>
+      <key>PayloadIdentifier</key><string>com.wifi.profile.network</string>
+      <key>PayloadUUID</key><string>${createUuid()}</string>
+      <key>PayloadVersion</key><integer>1</integer>
+      <key>PayloadDisplayName</key><string>${displayName}</string>
+    </dict>
+  </array>
+  <key>PayloadDisplayName</key><string>${displayName}</string>
+  <key>PayloadIdentifier</key><string>com.wifi.profile</string>
+  <key>PayloadType</key><string>Configuration</string>
+  <key>PayloadUUID</key><string>${createUuid()}</string>
+  <key>PayloadVersion</key><integer>1</integer>
+  <key>PayloadRemovalDisallowed</key><false/>
+</dict>
+</plist>
+`;
+}

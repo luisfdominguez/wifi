@@ -9,7 +9,7 @@ Web app estática (sin backend ni dependencias de runtime) que genera la URL par
 | **URL** → `connect.html#s=…&t=…&p=…` | Al tocar abre la página con SSID, clave (botón copiar) y QR | Igual |
 | **WiFi nativo** (registro `application/vnd.wfa.wsc`) | No soportado por iOS | Conecta al tocar |
 
-> iOS no puede unirse a una red WiFi directamente desde una etiqueta NFC. La página `connect.html` es el camino más corto sin app nativa. Para conexión en un toque en iPhone hay que crear un Atajo con automatización NFC.
+> iOS no puede unirse a una red WiFi directamente desde una etiqueta NFC. La página `connect.html` es el camino más corto sin app nativa. Para conexión automática posterior, `connect.html` ofrece un botón **«Descargar perfil WiFi»**: genera un `.mobileconfig` en el dispositivo (sin servidor), que se instala en Ajustes → «Perfil descargado». Aparece como «no firmado» (normal) y después el iPhone se une solo a la red.
 
 ## Seguridad
 

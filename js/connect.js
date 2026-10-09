@@ -1,5 +1,14 @@
-import { SECURITY, parseConnectHash, buildWifiString } from "./wifi.js";
+import {
+  SECURITY,
+  parseConnectHash,
+  buildWifiString,
+  buildMobileConfig,
+  MOBILECONFIG_MIME_TYPE,
+} from "./wifi.js";
 import { renderQrSvg } from "./qr.js";
+
+// Revocar de inmediato cancelaría la descarga en Safari.
+const PROFILE_URL_REVOKE_DELAY_MS = 60_000;
 
 const $ = (id) => document.getElementById(id);
 
@@ -32,6 +41,21 @@ function showNetwork(network) {
       $("copy-status").textContent = "✔ Clave copiada";
     } catch {
       $("copy-status").textContent = "No se pudo copiar. Mantén pulsada la clave para copiarla.";
+    }
+  });
+
+  $("install-profile").addEventListener("click", () => {
+    try {
+      const profile = buildMobileConfig(network);
+      const blob = new Blob([profile], { type: MOBILECONFIG_MIME_TYPE });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "wifi.mobileconfig";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), PROFILE_URL_REVOKE_DELAY_MS);
+      $("profile-status").textContent = "Perfil generado. Sigue los pasos de arriba en Ajustes.";
+    } catch {
+      $("profile-status").textContent = "No se pudo generar el perfil en este navegador.";
     }
   });
 }
